@@ -97,6 +97,39 @@ DECLARE_API(dump_raw)
 		return;
 	}
 }
+DECLARE_API(ssdt)
+{
+	ULONG_PTR imageBase;
+	string cArgs(args);
+	vector<string> argsVector = splitArgs(cArgs);
+
+	if (argsVector.size() != 1) {
+		dprintf("Usage: !ssdt <length>");
+		return;
+	}
+
+	ULONG_PTR length = GetExpression(argsVector[0].c_str());
+	ULONG_PTR ssdtAddress = GetExpression("nt!KiServiceTable");
+
+	for (ULONG_PTR i = 0; i < length; i += 4)
+	{
+		char symbolName[1024];
+		DWORD offset;
+		DWORD bytesRead = 0;
+		ReadMemory(ssdtAddress + i, &offset, 4, &bytesRead);
+		
+		ULONG64 displacement = 0; 
+		GetSymbol(ssdtAddress + (offset>>4), symbolName, &displacement);
+		if (displacement != 0)
+		{
+			symbolName[0] = '\0';
+		}
+		else {
+			dprintf("%p %p %s\n", ssdtAddress + offset, ssdtAddress + (offset>>4), symbolName);
+		}
+	}
+}
+
 DECLARE_API(dump_disk)
 {
 	ULONG_PTR imageBase;

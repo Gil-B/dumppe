@@ -5,3 +5,4 @@ EXPORTS
     ExtensionApiVersion
 	dump_raw
 	dump_disk
+	ssdt
