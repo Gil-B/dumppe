@@ -1,0 +1,7 @@
+LIBRARY "DUMPPE.DLL"
+
+EXPORTS
+    WinDbgExtensionDllInit
+    ExtensionApiVersion
+	dump_raw
+	dump_disk
