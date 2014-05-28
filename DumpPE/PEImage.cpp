@@ -20,7 +20,7 @@ PEImage::PEImage()
 	// Intentionally left empty.
 }
 
-PEImage PEImage::fromMemory(ULONG_PTR imageBase)
+std::shared_ptr<PEImage> PEImage::fromMemory(ULONG_PTR imageBase)
 {
 	ULONG bytesRead = 0;
 	IMAGE_DOS_HEADER dosHeader;
@@ -44,19 +44,19 @@ PEImage PEImage::fromMemory(ULONG_PTR imageBase)
 	dprintf("PE magic found\n");
 
 	
-	PEImage peImage;
+	std::shared_ptr<PEImage> peImage(new PEImage());
+	
 	// Get the image size
-	peImage.m_imageSize = ntHeaders.OptionalHeader.SizeOfImage;
-	dprintf("SizeOfImage is %u\n", peImage.m_imageSize);
+	peImage->m_imageSize = ntHeaders.OptionalHeader.SizeOfImage;
+	dprintf("SizeOfImage is %u\n", peImage->m_imageSize);
 	
 	// Read the whole image into memory.
-	BYTE* rawBuffer = new BYTE[peImage.m_imageSize];
-	ReadMemory(imageBase, rawBuffer, peImage.m_imageSize, &bytesRead);
+	std::shared_ptr<BYTE> rawBuffer(new BYTE[peImage->m_imageSize]);
+	ReadMemory(imageBase, rawBuffer.get(), peImage->m_imageSize, &bytesRead);
 
-	peImage.m_image.reset(new string((char*)rawBuffer, peImage.m_imageSize));
-	delete[] rawBuffer;
-	if (bytesRead != peImage.m_imageSize) {
-		dprintf("ERROR: PE size is %d but only %d bytes were found", peImage.m_imageSize, bytesRead);
+	peImage->m_image.reset(new string((char*)rawBuffer.get(), peImage->m_imageSize));
+	if (bytesRead != peImage->m_imageSize) {
+		dprintf("ERROR: PE size is %d but only %d bytes were found", peImage->m_imageSize, bytesRead);
 		throw ReadMemoryException();
 	}
 	

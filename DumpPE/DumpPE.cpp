@@ -86,9 +86,9 @@ DECLARE_API(dump_raw)
 	}
 	imageBase = GetExpression(argsVector[0].c_str());
 	try {
-		PEImage peImage = PEImage::fromMemory(imageBase);
+		shared_ptr<PEImage> peImage = PEImage::fromMemory(imageBase);
 		ofstream outputStream(argsVector[1], ofstream::binary);
-		outputStream.write((char*)peImage.getImage().get(), peImage.getImageSize());
+		outputStream.write((char*)peImage->getImage()->c_str(), peImage->getImageSize());
 		outputStream.close();
 	}
 	catch (...) 
@@ -97,7 +97,6 @@ DECLARE_API(dump_raw)
 		return;
 	}
 }
-
 DECLARE_API(dump_disk)
 {
 	ULONG_PTR imageBase;
@@ -109,22 +108,22 @@ DECLARE_API(dump_disk)
 	}
 	imageBase = GetExpression(argsVector[0].c_str());
 	try {
-		PEImage peImage = PEImage::fromMemory(imageBase);
+		shared_ptr<PEImage> peImage = PEImage::fromMemory(imageBase);
 		
 		// Write DOS header
 		dprintf("Dumping DOS stub...\n");
 		ofstream outputStream(argsVector[1], ofstream::binary);
-		outputStream<<peImage.getDOSStub();
+		outputStream<<peImage->getDOSStub();
 		
 		dprintf("Dumping NT headers...\n");
 		//Write NT headers
-		outputStream<<peImage.getNTHeaders();
+		outputStream<<peImage->getNTHeaders();
 		dprintf("Dumping section headers...\n");
-		outputStream<<peImage.getSectionHeaders();
+		outputStream<<peImage->getSectionHeaders();
 		dprintf("Fixing file alignment...\n");
-		fixAlignment(outputStream, peImage.getFileAlignment());
+		fixAlignment(outputStream, peImage->getFileAlignment());
 		dprintf("Dumping sections...\n");
-		outputStream<<peImage.getSections();
+		outputStream<<peImage->getSections();
 	}
 	catch (...) 
 	{
