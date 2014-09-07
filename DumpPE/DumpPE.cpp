@@ -76,7 +76,7 @@ VOID WDBGAPI WinDbgExtensionDllInit (PWINDBG_EXTENSION_APIS
 
 DECLARE_API(dump_raw)
 {
-	ULONG_PTR imageBase;
+	ULONG64 imageBase;
 	string cArgs(args);
 	vector<string> argsVector = splitArgs(cArgs);
 
@@ -99,7 +99,7 @@ DECLARE_API(dump_raw)
 }
 DECLARE_API(ssdt)
 {
-	ULONG_PTR imageBase;
+	ULONG64 imageBase;
 	string cArgs(args);
 	vector<string> argsVector = splitArgs(cArgs);
 
@@ -108,8 +108,8 @@ DECLARE_API(ssdt)
 		return;
 	}
 
-	ULONG_PTR length = GetExpression(argsVector[0].c_str());
-	ULONG_PTR ssdtAddress = GetExpression("nt!KiServiceTable");
+	ULONG64 length = GetExpression(argsVector[0].c_str());
+	ULONG64 ssdtAddress = GetExpression("nt!KiServiceTable");
 
 	for (ULONG_PTR i = 0; i < length; i += 4)
 	{
@@ -132,7 +132,7 @@ DECLARE_API(ssdt)
 
 DECLARE_API(dump_disk)
 {
-	ULONG_PTR imageBase;
+	ULONG64 imageBase;
 	string cArgs(args);
 	vector<string> argsVector = splitArgs(cArgs);
 	if (argsVector.size() != 2) {

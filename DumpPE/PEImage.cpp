@@ -20,7 +20,7 @@ PEImage::PEImage()
 	// Intentionally left empty.
 }
 
-std::shared_ptr<PEImage> PEImage::fromMemory(ULONG_PTR imageBase)
+std::shared_ptr<PEImage> PEImage::fromMemory(ULONG64 imageBase)
 {
 	ULONG bytesRead = 0;
 	IMAGE_DOS_HEADER dosHeader;

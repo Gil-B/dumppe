@@ -17,7 +17,7 @@ public:
 	DWORD getFileAlignment();
 	std::string getSections();
 
-	static std::shared_ptr<PEImage> fromMemory(ULONG_PTR imageBase);
+	static std::shared_ptr<PEImage> fromMemory(ULONG64 imageBase);
 private:
 	PEImage();
 	LONG getNTHeaderOffset();
