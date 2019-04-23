@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include "exceptions.h"
+#include <iterator>
 #include <string>
 #include <vector>
 #include <sstream>
@@ -71,11 +72,17 @@ VOID WDBGAPI WinDbgExtensionDllInit (PWINDBG_EXTENSION_APIS
            lpExtensionApis, USHORT usMajorVersion, 
            USHORT usMinorVersion)
 {
+	UNREFERENCED_PARAMETER(usMajorVersion);
+	UNREFERENCED_PARAMETER(usMinorVersion);
      ExtensionApis = *lpExtensionApis;
 }
 
 DECLARE_API(dump_raw)
 {
+	UNREFERENCED_PARAMETER(hCurrentProcess);
+	UNREFERENCED_PARAMETER(hCurrentThread);
+	UNREFERENCED_PARAMETER(dwCurrentPc);
+	UNREFERENCED_PARAMETER(dwProcessor);
 	ULONG64 imageBase;
 	string cArgs(args);
 	vector<string> argsVector = splitArgs(cArgs);
@@ -99,7 +106,11 @@ DECLARE_API(dump_raw)
 }
 DECLARE_API(ssdt)
 {
-	ULONG64 imageBase;
+	UNREFERENCED_PARAMETER(hCurrentProcess);
+	UNREFERENCED_PARAMETER(hCurrentThread);
+	UNREFERENCED_PARAMETER(dwCurrentPc);
+	UNREFERENCED_PARAMETER(dwProcessor);
+	
 	string cArgs(args);
 	vector<string> argsVector = splitArgs(cArgs);
 
@@ -132,6 +143,10 @@ DECLARE_API(ssdt)
 
 DECLARE_API(dump_disk)
 {
+	UNREFERENCED_PARAMETER(hCurrentProcess);
+	UNREFERENCED_PARAMETER(hCurrentThread);
+	UNREFERENCED_PARAMETER(dwCurrentPc);
+	UNREFERENCED_PARAMETER(dwProcessor);
 	ULONG64 imageBase;
 	string cArgs(args);
 	vector<string> argsVector = splitArgs(cArgs);
@@ -169,6 +184,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
                        LPVOID lpReserved
 					 )
 {
+	UNREFERENCED_PARAMETER(hModule);
+	UNREFERENCED_PARAMETER(lpReserved);
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
